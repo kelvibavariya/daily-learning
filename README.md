@@ -1,6 +1,6 @@
 # Date: 10-08-2024
 1. DSA Practice
-   1. Question: [House Robber](https://leetcode.com/problems/house-robber/description/)  
+   1. Question: [House Robber](https://leetcode.com/problems/house-robber/)  
       Solution:
        * Memoization:
          ```cpp
@@ -39,7 +39,7 @@
            Complexity:  
              -> TC: O(N)  
              -> SC: O(N)
-    2. Question: [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/)  
+    2. Question: [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/)  
        Solution:  
        ```cpp
        int maxProfit(vector<int>& prices) {
@@ -58,7 +58,7 @@
        Complexity:  
          -> TC: O(N)  
          -> SC: O(1)
-     3. Question: [Best Time to Buy and Sell stock with Transaction Fee](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/description/)  
+     3. Question: [Best Time to Buy and Sell stock with Transaction Fee](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)  
         Solution:
         * Memoization:
           ```cpp
@@ -106,7 +106,7 @@
           Complexity:  
            -> TC: O(N * 2)  
            -> SC: O(N * 2)
-    4. Question: [Best Time to Buy and Sell stock with Cooldown](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/description/)  
+    4. Question: [Best Time to Buy and Sell stock with Cooldown](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)  
        Solution:
        ```cpp
        int maxProfit(vector<int>& prices) {
@@ -116,10 +116,10 @@
         for(int i=n-1;i>=0;i--){
            for(int j=0;j<=1;j++){
                if(j){
-                    profit=max(-prices[i]+dp[i+1][0],dp[i+1][1]);
+                    profit=max(prices[i]+dp[i+2][0],dp[i+1][1]);
                 }
                 else{
-                    profit=max(prices[i]+dp[i+2][1],dp[i+1][0]);
+                    profit=max(-prices[i]+dp[i+1][1],dp[i+1][0]);
                 }
                 dp[i][j]=profit;
            } 
@@ -130,7 +130,7 @@
        Complexity:  
         -> TC: O(N * 2)  
         -> SC: O(N * 2)
-   5. Question: [Best Time to Buy and Sell Stock iii](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/)
+   5. Question: [Best Time to Buy and Sell Stock iii](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/)  
       Solution:
       ```cpp
       int maxProfit(vector<int>& p) {
@@ -140,9 +140,9 @@
             for(int j=0;j<=1;j++){
                 for(int k=1;k<=2;k++){
                     if(j)
-                        dp[i][j][k]=max(-p[i]+dp[i+1][0][k],dp[i+1][1][k]);
+                        dp[i][j][k]=max(p[i]+dp[i+1][0][k-1],dp[i+1][1][k]);
                     else
-                        dp[i][j][k]=max(p[i]+dp[i+1][1][k-1],dp[i+1][0][k]);
+                        dp[i][j][k]=max(-p[i]+dp[i+1][1][k],dp[i+1][0][k]);
                 }
             }
         }
@@ -152,6 +152,33 @@
       Complexity:  
         -> TC: O(N * 2 * 3)  
         -> SC: O(N * 2 * 3)
-      
-        
+# Date: 11-08-2024   
+1. DSA Practice
+   1. Question: [Best Time to Buy and Sell Stock iv](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/)  
+      Solution:
+      ```cpp
+      int maxProfit(int k, vector<int>& prices) {
+       int n = prices.size();
+       vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(2, vector<int>(k + 1, 0)));
+   
+       for (int i = n - 1; i >= 0; i--) {
+           for (int buy = 0; buy <= 1; buy++) {
+               for (int j = 1; j <= k; j++) {
+                   if (buy == 0) { // can buy only
+                       dp[i][buy][j] = max(dp[i + 1][0][j], -prices[i] + dp[i + 1][1][j]);
+                   }
+   
+                   else { // can sell only
+                       dp[i][buy][j] = max(dp[i + 1][1][j], prices[i] + dp[i + 1][0][j - 1]);
+                   }
+               }
+           }
+       }
+   
+       return dp[0][0][k];
+      }
+      ```  
+      Complexity:  
+      -> TC: O(N * 2 * K)  
+      -> SC: O(N * 2 * K)  
    
