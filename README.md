@@ -180,5 +180,69 @@
       ```  
       Complexity:  
       -> TC: O(N * 2 * K)  
-      -> SC: O(N * 2 * K)  
-   
+      -> SC: O(N * 2 * K)
+
+# Date: 12-08-2024
+1. DSA Practice
+   1. Question: [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/)  
+      Solution:  
+      ```cpp
+      string longestPalindrome(string s) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        
+        int max_len = 1;
+        int start = 0;
+        int end = 0;
+        vector<vector<bool>> dp(s.length(), vector<bool>(s.length(), false));
+        
+        for (int i = 0; i < s.length(); ++i) {
+            dp[i][i] = true;
+            for (int j = 0; j < i; ++j) {
+                // (i-j<=2) - string of length <= 3 - always palindrome
+                // (j [(j+1)...(i-1)] i) - s[j]==s[i] && middle is also palindrome 
+                if (s[j] == s[i] && (i - j <= 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+                    if (i - j + 1 > max_len) {
+                        max_len = i - j + 1;
+                        start = j;
+                        end = i;
+                    }
+                }
+            }
+        }
+        
+        return s.substr(start, end - start + 1);
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * N)  
+      -> SC: O(N * N)
+   2. Question: [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)  
+      Solution:
+      ```cpp
+      //memoization
+      int solve(int i,int j,string &s1,string &s2,vector<vector<int>> &dp){
+        if(i>=s1.length() || j>=s2.length())return 0;
+        if(dp[i][j]!=-1)return dp[i][j];
+        if(s1[i]==s2[j])return dp[i][j]=1+solve(i+1,j+1,s1,s2,dp);
+        return dp[i][j]=max(solve(i,j+1,s1,s2,dp),solve(i+1,j,s1,s2,dp));
+       }
+      int longestCommonSubsequence(string text1, string text2) {
+           int n=text1.length(),m=text2.length();
+           vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+           // tabulation
+           for(int i=n-1;i>=0;i--){
+               for(int j=m-1;j>=0;j--){
+                   if(text1[i]==text2[j])
+                       dp[i][j]=1+dp[i+1][j+1];
+                   else dp[i][j]=max(dp[i][j+1],dp[i+1][j]);
+               }
+           }
+           return dp[0][0];
+      }
+      ```  
+      Complexity:  
+      -> TC: O(N * M)  
+      -> SC: O(N * M)  
