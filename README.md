@@ -285,6 +285,7 @@
         // return solve(0,n-1,s,dp);
       }
       ```  
+      Note: another solution find longest common subsequence of (s, reverse(s))  
       Complexity:  
       -> TC: O(N * N)  
       -> SC: O(N * N)
