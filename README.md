@@ -245,4 +245,46 @@
       ```  
       Complexity:  
       -> TC: O(N * M)  
-      -> SC: O(N * M)  
+      -> SC: O(N * M)
+
+# Date: 13-08-2024
+1. DSA practice
+   1. Question: [Longest Palindromic Subsequence](https://leetcode.com/problems/longest-palindromic-subsequence/)    
+      Solution:
+      ```cpp
+      // Memoization
+      int solve(int i,int j,string s,vector<vector<int>> &dp){
+        if(i>j)return 0;
+        if(i==j)return 1;
+        if(dp[i][j]!=-1)return dp[i][j];
+        if(s[i]==s[j])
+            return dp[i][j]=2+solve(i+1,j-1,s,dp);
+        else
+        return dp[i][j]=max(solve(i+1,j,s,dp),solve(i,j-1,s,dp));
+      }
+      int longestPalindromeSubseq(string s) {
+        int n=s.length();
+        vector<vector<int>> dp(n,vector<int>(n,0));
+        // Tabulation
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = 1;
+        }
+        for (int i = n - 2; i >= 0; i--) { // i goes from n-2 down to 0
+            for (int j = i + 1; j < n; j++) { // j goes from i+1 up to n-1
+        // for(int j=1;j<n;j++){ //end of substring
+        //     for(int i=j-1;i>=0;i--){ //start of substring
+                if(s[i]==s[j]){
+                    dp[i][j]=2+dp[i+1][j-1];
+                }
+                else{
+                    dp[i][j]=max(dp[i+1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return dp[0][n-1];
+        // return solve(0,n-1,s,dp);
+      }
+      ```  
+      Complexity:  
+      -> TC: O(N * N)  
+      -> SC: O(N * N)
