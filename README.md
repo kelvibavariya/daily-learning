@@ -289,3 +289,47 @@
       Complexity:  
       -> TC: O(N * N)  
       -> SC: O(N * N)
+
+# Date: 14-08-2024  
+1. DSA Practice
+   1. Question: [Edit Distance](https://leetcode.com/problems/edit-distance/)  
+      Solution:
+      ```cpp
+      // memoization
+      int solve(int i,int j,string word1, string word2, vector<vector<int>> &dp){
+        if(i>=word1.size())return word2.length()-j; //insert remaining
+        if(j>=word2.size())return word1.length()-i; //delete remaining
+        
+        if(dp[i][j]!=-1)return dp[i][j];
+        if(word1[i]==word2[j])
+            return dp[i][j]=solve(i+1,j+1,word1,word2,dp);
+        else
+            //(i,j+1) -> insert into s
+            //(i+1,j) -> delete from s
+            //(i+1,j+1) -> replace in s
+            return dp[i][j]=1+min(solve(i,j+1,word1,word2,dp),
+            min(solve(i+1,j,word1,word2,dp), solve(i+1,j+1,word1,word2,dp)));
+      }
+      // tabulation
+      int minDistance(string word1, string word2) {
+        int n=word1.size(),m=word2.size();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+        //base case
+        for(int i=0;i<n;i++)dp[i][m]=n-i;
+        for(int i=0;i<m;i++)dp[n][i]=m-i;
+        
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(word1[i]==word2[j])
+                    dp[i][j]=dp[i+1][j+1];
+                else
+                    dp[i][j]=1+min(dp[i][j+1],min(dp[i+1][j],dp[i+1][j+1]));
+            }
+        }
+        return dp[0][0];
+        // return solve(0,0,word1,word2,dp);
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * M)  
+      -> TC: O(N * M)  
