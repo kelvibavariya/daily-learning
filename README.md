@@ -332,4 +332,306 @@
       ```
       Complexity:  
       -> TC: O(N * M)  
+      -> TC: O(N * M)
+
+# Date: 15-08-2024
+1. DSA Practice
+   1. Question: [Minimum ascii delete sum for two strings](https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/)  
+      Solution:
+      ```cpp
+      // memoization
+      int solve(int i,int j,string s1, string s2, vector<vector<int>> &dp){
+        if(i>=s1.length() && j>=s2.length())return 0;
+        if(i>=s1.length()){
+            int sum=0;
+            for(int p=j;p<s2.length();p++){
+                sum+=s2[p]-'a'+'a';
+            }
+            return sum;
+        }
+        if(j>=s2.length()){
+            int sum=0;
+            for(int p=i;p<s1.length();p++){
+                sum+=s1[p]-'a'+'a';
+            }
+            return sum;
+        }
+        if(dp[i][j]!=-1)return dp[i][j];
+        if(s1[i]==s2[j])return dp[i][j]=solve(i+1,j+1,s1,s2,dp);
+        else return dp[i][j]=min(s1[i]-'a'+'a'+solve(i+1,j,s1,s2,dp), s2[j]- 
+           'a'+'a'+solve(i,j+1,s1,s2,dp));
+      }
+      // tabulation
+      int minimumDeleteSum(string s1, string s2) {
+        int n=s1.length(),m=s2.length();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+        //base case condition to notice
+        for(int i=n-1;i>=0;i--){
+            dp[i][m]=dp[i+1][m]+s1[i]-'a'+'a';
+        }
+        for(int i=m-1;i>=0;i--){
+            dp[n][i]=dp[n][i+1]+s2[i]-'a'+'a';
+        }
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(s1[i]==s2[j])
+                    dp[i][j]=dp[i+1][j+1];
+                else
+                    dp[i][j]=min(s1[i]-'a'+'a'+dp[i+1][j], s2[j]-'a'+'a'+dp[i][j+1]);
+            }
+        }
+        return dp[0][0];
+        // return solve(0,0,s1,s2,dp);
+      }
+      ```  
+      Complexity:  
       -> TC: O(N * M)  
+      -> SC: O(N * M)  
+
+# Date: 16-08-2024
+1. DSA Practice
+   1. Question: [Shortest Common Supersequence](https://leetcode.com/problems/shortest-common-supersequence/)  
+      Solution:
+      ```cpp
+      string shortestCommonSupersequence(string str1, string str2) {
+        int n=str1.size(),m=str2.size();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(str1[i]==str2[j])dp[i][j]=1+dp[i+1][j+1];
+                else dp[i][j]=max(dp[i+1][j],dp[i][j+1]);
+            }
+        }
+        string ans="";
+	    // start with (0,0) because answer is stored at dp[0][0]
+        int i=0,j=0;
+        while(i<n && j<m){
+		  // lcs characters
+            if(str1[i]==str2[j]){
+                ans+=str1[i];
+                i++;
+                j++;
+            }
+		  // non-lcs characters
+            else if(dp[i][j+1]>dp[i+1][j]){
+                ans+=str2[j];
+                j++;
+            }
+            else{
+                ans+=str1[i];
+                i++;
+            }
+        }
+        while(i<n){
+            ans+=str1[i];
+            i++;
+        }
+        while(j<m){
+            ans+=str2[j];
+            j++;
+        }
+        return ans;
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * M)  
+      -> SC: O(N * M)  
+  2. Question: [Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/)  
+     Solution:  
+     ```cpp
+     int solve(int i,int j,string s,string t,vector<vector<int>> &dp){
+        if(j>=t.length())return 1;
+        if(i>=s.length())return 0;
+        if(dp[i][j]!=-1)return dp[i][j];
+        if(s[i]==t[j])return dp[i][j]=solve(i+1,j+1,s,t,dp)+solve(i+1,j,s,t,dp);
+        else return dp[i][j]=solve(i+1,j,s,t,dp);
+     }
+     int numDistinct(string s, string t) {
+        int n=s.length(),m=t.length();
+        vector<vector<double>> dp(n+1,vector<double>(m+1,0));
+        for(int i=0;i<=n;i++)dp[i][m]=1;
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                if(s[i]==t[j])
+                    dp[i][j]=dp[i+1][j+1]+dp[i+1][j];
+                else
+                    dp[i][j]=dp[i+1][j];
+            }
+        }
+        return dp[0][0];
+        // return solve(0,0,s,t,dp);
+     }
+     ```
+     Complexity:  
+     -> TC: O(N * M)  
+     -> SC: O(N * M)  
+
+# Date: 17-08-2024  
+1. DSA Practice
+   1. Question: [Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/)  
+      Solution:  
+      ```cpp
+      int numTrees(int n) {
+        vector<int> v(n+1);
+        v[0]=1;v[1]=1;
+        for(int i=2;i<=n;i++){ // i as a root for bst of [1 to n]
+            for(int j=1;j<=i;j++){ // j as a root for bst of [1 to i]
+                v[i]+=v[j-1]*v[i-j];
+            }
+        }
+        return v[n];
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * N)  
+      -> SC: O(N)  
+
+# Date: 18-08-2024
+1. DSA Practice
+   1. Question: [Burst Balloons](https://leetcode.com/problems/burst-balloons/)  
+      Solution:  
+      ```cpp
+      // memoization
+      int solve(int i,int j,vector<int>& nums, vector<vector<int>> &dp){
+        if(i>j)return 0;
+        if(dp[i][j]!=-1)return dp[i][j];
+        int ans=INT_MIN;
+        // burst kth balloon at the end in i to j - so kth adjacent ballons are i-1 and j+1
+        for(int k=i;k<=j;k++){
+            int temp=nums[i-1]*nums[k]*nums[j+1]+solve(i,k-1,nums,dp)+solve(k+1,j,nums,dp);
+            ans=max(ans,temp);
+        }
+        return dp[i][j]=ans;
+      }
+      // tabulation
+      int maxCoins(vector<int>& nums) {
+        int n=nums.size();
+        nums.insert(nums.begin(),1);
+        nums.push_back(1);
+        vector<vector<int>> dp(n+2,vector<int>(n+2,0));
+        for(int i=n;i>=1;i--){
+            for(int j=1;j<=n;j++){
+                if(i>j)continue;
+                int ans=INT_MIN;
+                for(int k=i;k<=j;k++){
+                    int temp=nums[i-1]*nums[k]*nums[j+1]+dp[i][k-1]+dp[k+1][j];
+                    ans=max(ans,temp);
+                }
+                dp[i][j]=ans;
+            }
+        }
+        return dp[1][n];
+        // return solve(1,n,nums,dp);
+      }
+      ```
+      Complexity:   
+      -> TC: O(N * N * N)  
+      -> SC: O(N * N)  
+
+# Date: 19-08-2024  
+1. DSA Practice
+   1. Question: [2 keys keyboard](https://leetcode.com/problems/2-keys-keyboard/)  
+      Solution:
+      ```cpp
+      int solve(int onTheScreen,int copied,int n){
+        if(onTheScreen>=n)return 0;
+	     // copy and paste
+        if(n%onTheScreen==0)return 2+solve(onTheScreen+onTheScreen,onTheScreen,n);
+	     // paste
+        else return 1+solve(onTheScreen+copied,copied,n);
+      }
+      int minSteps(int n) {
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT_MAX));
+
+       // Base case - when onTheScreen = n
+       for(int copied = 0; copied <= n; copied++) {
+           dp[n][copied] = 0;
+       }
+   
+       for(int onTheScreen = n - 1; onTheScreen >= 1; onTheScreen--) {
+           for(int copied = onTheScreen; copied >= 0; copied--) {
+               if (n % onTheScreen == 0 && onTheScreen + onTheScreen <= n && dp[onTheScreen + onTheScreen][onTheScreen] != INT_MAX) {
+                   dp[onTheScreen][copied] = min(dp[onTheScreen][copied], 2 + dp[onTheScreen + onTheScreen][onTheScreen]);
+               }
+               if (onTheScreen + copied <= n && dp[onTheScreen + copied][copied] != INT_MAX ) {
+                   dp[onTheScreen][copied] = min(dp[onTheScreen][copied], 1 + dp[onTheScreen + copied][copied]);
+               }
+           }
+       }
+           return dp[1][0];
+           // return solve(1,0,n);
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * N)  
+      -> SC: O(N * N)    
+
+# Date: 20-08-2024  
+1. DSA Practice
+   1. Question: [Minimum cost tree from leaf values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/)  
+      Solution:
+      ```cpp
+      int solve(int i,int j,vector<int>& arr,map<pair<int,int>,int> mp,vector<vector<int>> &dp){
+        if(i>=j)return 0;
+        if(dp[i][j]!=-1)return dp[i][j];
+        int ans=INT_MAX;
+        for(int k=i;k<j;k++){
+            ans=min(ans,mp[{i,k}]*mp[{k+1,j}]+solve(i,k,arr,mp,dp)+solve(k+1,j,arr,mp,dp));
+        }
+        return dp[i][j]=ans;
+      }
+      int mctFromLeafValues(vector<int>& arr) {
+        int n=arr.size();
+        map<pair<int,int>,int> mp;
+        for(int i=0;i<n;i++){
+            mp[{i,i}]=arr[i];
+            for(int j=i+1;j<n;j++){
+                mp[{i,j}]=max(mp[{i,j-1}],arr[j]);
+            }
+        }
+        vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
+        return solve(0,n-1,arr,mp,dp);
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * N)  
+      -> SC: O(N * N)  
+
+# Date: 21-08-2024  
+1. DSA Practice
+   1. Question: [Guess number higher or lower II](https://leetcode.com/problems/guess-number-higher-or-lower-ii/)  
+      Solution:  
+      ```cpp
+      int solve(int i,int j,vector<vector<int>> &dp){
+        if(i>=j)return 0;
+        if(dp[i][j]!=-1)return dp[i][j];  
+        int ans=INT_MAX;
+        for(int k=i;k<=j;k++){ // guess every number from [i,j]
+            int temp=k+max(solve(i,k-1,dp),solve(k+1,j,dp)); //max from lower/higher (max loss)
+            ans=min(ans,temp); //minimize maximum loss
+        }
+        return dp[i][j]=ans;
+      }
+      int getMoneyAmount(int n) {
+        vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+        for(int i=n;i>=1;i--){ //i-> 1 to n
+            for(int j=i+1;j<=n;j++){ //j-> n to i-1 (base case: i>=j)
+                if(i == j){ // base case
+                    dp[i][j]=0;
+                    continue;
+                }
+                int ans=INT_MAX;
+                for(int k=i;k<=j;k++){
+                    int temp=k+max(solve(i,k-1,dp),solve(k+1,j,dp));
+                    ans=min(ans,temp);
+                }
+                dp[i][j]=ans;
+            }
+        }
+        return dp[1][n];
+        // return solve(1,n,dp);
+      }
+      ```
+      Complexity:  
+      -> TC: O(N * N * N)  
+      -> SC: O(N * N)  
